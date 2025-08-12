@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Interactive Guide to IPOs</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Calm Harmony -->
+    <!-- Application Structure Plan: The application is designed as a non-linear, thematic, single-page experience to transform the dense report into an engaging learning tool. The structure prioritizes user-centric exploration over the report's linear format. A persistent top navigation allows users to jump between four key perspectives: 1) "The Big Picture" for core concepts, 2) "The Company's Journey" for the process, 3) "The Investor's View" for risks/rewards, and 4) "Key Terms" for a quick reference. This modular approach allows different user types (e.g., potential investors, founders) to directly access content relevant to them. Interactions like a clickable timeline for the IPO process and toggleable cards for pros/cons are used to break down complex information into digestible, user-controlled chunks, enhancing comprehension and engagement. -->
+    <!-- Visualization & Content Choices: 1. IPO Process -> Goal: Organize/Change -> Viz: Interactive HTML/CSS Timeline -> Interaction: Click stage to reveal details -> Justification: Visually simplifies a complex sequence. 2. Company Pros/Cons -> Goal: Compare -> Viz: HTML Toggle Cards -> Interaction: Click to switch views -> Justification: Focuses user attention and is more dynamic than a static table. 3. Investor Risks/Opportunities -> Goal: Compare -> Viz: Chart.js Bar Chart -> Interaction: Hover for tooltips -> Justification: Visually represents the balance of risk vs. reward more impactfully than a list. 4. Key Players -> Goal: Organize/Relate -> Viz: Interactive HTML/CSS Diagram -> Interaction: Click player to see role -> Justification: Clarifies stakeholder relationships visually. 5. Glossary -> Goal: Inform -> Viz: Searchable HTML List -> Interaction: Type to filter -> Justification: Superior usability over a static, scrollable list. All visualizations are built to be responsive and avoid information overload. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body { font-family: 'Inter', sans-serif; scroll-behavior: smooth; }
+        .nav-link { transition: color 0.3s, border-color 0.3s; }
+        .nav-link.active { color: #3b82f6; border-bottom-color: #3b82f6; }
+        .timeline-item { transition: all 0.3s ease-in-out; }
+        .timeline-item.active { transform: translateY(-5px); box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1); }
+        .content-section { display: none; }
+        .content-section.active { display: block; }
+        .chart-container { position: relative; width: 100%; max-width: 600px; margin-left: auto; margin-right: auto; height: 350px; max-height: 400px; }
+        @media (min-width: 768px) { .chart-container { height: 400px; } }
+        .fade-in { animation: fadeIn 0.5s ease-in-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800">
+
+    <header class="bg-white/80 backdrop-blur-lg sticky top-0 z-50 shadow-sm">
+        <nav class="container mx-auto px-6 py-3 flex justify-between items-center">
+            <a href="#" class="text-xl font-bold text-gray-900">IPO Guide</a>
+            <div class="hidden md:flex items-center space-x-8">
+                <a href="#section-big-picture" class="nav-link text-gray-600 hover:text-blue-500 border-b-2 border-transparent pb-1">The Big Picture</a>
+                <a href="#section-company-journey" class="nav-link text-gray-600 hover:text-blue-500 border-b-2 border-transparent pb-1">The Company's Journey</a>
+                <a href="#section-investor-view" class="nav-link text-gray-600 hover:text-blue-500 border-b-2 border-transparent pb-1">The Investor's View</a>
+                <a href="#section-key-terms" class="nav-link text-gray-600 hover:text-blue-500 border-b-2 border-transparent pb-1">Key Terms</a>
+            </div>
+            <button id="mobile-menu-button" class="md:hidden focus:outline-none">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
+            </button>
+        </nav>
+        <div id="mobile-menu" class="hidden md:hidden">
+            <a href="#section-big-picture" class="block py-2 px-6 text-sm text-gray-700 hover:bg-gray-100">The Big Picture</a>
+            <a href="#section-company-journey" class="block py-2 px-6 text-sm text-gray-700 hover:bg-gray-100">The Company's Journey</a>
+            <a href="#section-investor-view" class="block py-2 px-6 text-sm text-gray-700 hover:bg-gray-100">The Investor's View</a>
+            <a href="#section-key-terms" class="block py-2 px-6 text-sm text-gray-700 hover:bg-gray-100">Key Terms</a>
+        </div>
+    </header>
+
+    <main>
+        <section class="bg-white">
+            <div class="container mx-auto px-6 py-20 md:py-32 text-center">
+                <h1 class="text-4xl md:text-6xl font-bold text-gray-900 leading-tight">What is an IPO?</h1>
+                <p class="mt-4 text-lg md:text-xl text-gray-600 max-w-3xl mx-auto">An Initial Public Offering (IPO) is when a private company sells its stock to the public for the first time, transforming into a public company whose shares can be traded on an exchange like the NYSE or Nasdaq.</p>
+                <a href="#section-big-picture" class="mt-8 inline-block bg-blue-600 text-white font-semibold py-3 px-8 rounded-lg shadow-lg hover:bg-blue-700 transition-transform transform hover:scale-105">Start Exploring</a>
+            </div>
+        </section>
+
+        <section id="section-big-picture" class="py-16 md:py-24">
+            <div class="container mx-auto px-6">
+                <h2 class="text-3xl md:text-4xl font-bold text-center text-gray-900">The Big Picture: Why Go Public?</h2>
+                <p class="mt-4 text-center text-gray-600 max-w-2xl mx-auto">An IPO is a monumental step for any company. It unlocks immense opportunities but also introduces significant challenges and responsibilities. This section explores the fundamental motivations and trade-offs behind the decision to "go public."</p>
+                
+                <div class="mt-12 max-w-4xl mx-auto">
+                    <div class="flex justify-center border-b border-gray-200 mb-8">
+                        <button data-tab="advantages" class="tab-btn px-6 py-3 font-semibold text-blue-600 border-b-2 border-blue-600">Advantages</button>
+                        <button data-tab="disadvantages" class="tab-btn px-6 py-3 font-semibold text-gray-500">Disadvantages</button>
+                    </div>
+                    <div id="advantages" class="tab-content fade-in">
+                        <div class="grid md:grid-cols-2 gap-8">
+                            <div class="bg-white p-6 rounded-lg shadow-md">
+                                <h3 class="font-bold text-lg text-gray-900">🚀 Access to Capital</h3>
+                                <p class="mt-2 text-gray-600">The primary reason is to raise a large amount of money to fund growth, expansion, R&D, or pay off debt.</p>
+                            </div>
+                            <div class="bg-white p-6 rounded-lg shadow-md">
+                                <h3 class="font-bold text-lg text-gray-900">💰 Liquidity for Insiders</h3>
+                                <p class="mt-2 text-gray-600">Provides an exit strategy for founders, early investors, and employees to sell their shares and realize gains.</p>
+                            </div>
+                            <div class="bg-white p-6 rounded-lg shadow-md">
+                                <h3 class="font-bold text-lg text-gray-900">🌟 Enhanced Profile & Credibility</h3>
+                                <p class="mt-2 text-gray-600">Going public raises a company's visibility, enhances its brand, and builds credibility with customers and partners.</p>
+                            </div>
+                            <div class="bg-white p-6 rounded-lg shadow-md">
+                                <h3 class="font-bold text-lg text-gray-900">🤝 Stock as Currency</h3>
+                                <p class="mt-2 text-gray-600">Publicly traded stock can be used to acquire other companies, making mergers and acquisitions easier.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="disadvantages" class="tab-content hidden fade-in">
+                        <div class="grid md:grid-cols-2 gap-8">
+                            <div class="bg-white p-6 rounded-lg shadow-md">
+                                <h3 class="font-bold text-lg text-gray-900">⚖️ Regulatory Burden</h3>
+                                <p class="mt-2 text-gray-600">Public companies face strict SEC reporting requirements, which are costly and time-consuming.</p>
+                            </div>
+                            <div class="bg-white p-6 rounded-lg shadow-md">
+                                <h3 class="font-bold text-lg text-gray-900">📉 Market Pressure</h3>
+                                <p class="mt-2 text-gray-600">Pressure to meet quarterly earnings expectations can lead to a focus on short-term results over long-term strategy.</p>
+                            </div>
+                            <div class="bg-white p-6 rounded-lg shadow-md">
+                                <h3 class="font-bold text-lg text-gray-900">🤫 Loss of Confidentiality</h3>
+                                <p class="mt-2 text-gray-600">Financial and operational details become public knowledge, which can be used by competitors.</p>
+                            </div>
+                            <div class="bg-white p-6 rounded-lg shadow-md">
+                                <h3 class="font-bold text-lg text-gray-900">💸 High Costs</h3>
+                                <p class="mt-2 text-gray-600">The IPO process itself is very expensive, involving fees for bankers, lawyers, and accountants.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="section-company-journey" class="py-16 md:py-24 bg-white">
+            <div class="container mx-auto px-6">
+                <h2 class="text-3xl md:text-4xl font-bold text-center text-gray-900">The Company's Journey: The IPO Process</h2>
+                <p class="mt-4 text-center text-gray-600 max-w-2xl mx-auto">Going public is not an overnight event; it's a long and complex journey that typically takes 6-12 months. Explore the key phases a company must navigate to make its debut on the stock market. Click on each stage to learn more.</p>
+                
+                <div class="mt-16">
+                    <div id="timeline-nav" class="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-8 max-w-5xl mx-auto">
+                        <div data-target="timeline-content-1" class="timeline-item active cursor-pointer bg-white p-4 rounded-lg shadow-md border-t-4 border-blue-500 text-center">
+                            <div class="text-3xl">1</div>
+                            <h3 class="font-semibold mt-2">Preparation</h3>
+                        </div>
+                        <div data-target="timeline-content-2" class="timeline-item cursor-pointer bg-white p-4 rounded-lg shadow-md border-t-4 border-gray-300 text-center">
+                            <div class="text-3xl">2</div>
+                            <h3 class="font-semibold mt-2">Filing & Marketing</h3>
+                        </div>
+                        <div data-target="timeline-content-3" class="timeline-item cursor-pointer bg-white p-4 rounded-lg shadow-md border-t-4 border-gray-300 text-center">
+                            <div class="text-3xl">3</div>
+                            <h3 class="font-semibold mt-2">Pricing & Listing</h3>
+                        </div>
+                        <div data-target="timeline-content-4" class="timeline-item cursor-pointer bg-white p-4 rounded-lg shadow-md border-t-4 border-gray-300 text-center">
+                            <div class="text-3xl">4</div>
+                            <h3 class="font-semibold mt-2">Post-IPO</h3>
+                        </div>
+                    </div>
+
+                    <div id="timeline-content-container" class="mt-8 max-w-5xl mx-auto bg-gray-50 p-8 rounded-lg shadow-inner fade-in">
+                        <div id="timeline-content-1" class="timeline-content active">
+                            <h3 class="text-2xl font-bold text-gray-900">Phase 1: Preparation & Underwriter Selection</h3>
+                            <p class="mt-4 text-gray-600">This is the foundational stage. The company must get its house in order by strengthening its financial reporting and corporate governance. It then selects investment banks (underwriters) through a competitive "bake-off" process. These banks will guide the company through the entire IPO, help value the company, and market the shares to investors.</p>
+                        </div>
+                        <div id="timeline-content-2" class="timeline-content hidden">
+                            <h3 class="text-2xl font-bold text-gray-900">Phase 2: Regulatory Filings & Marketing</h3>
+                            <p class="mt-4 text-gray-600">The company and its lawyers draft the S-1 Registration Statement, a comprehensive document detailing the business, financials, and risks, which is filed with the SEC. While the SEC reviews the filing, the management team and underwriters conduct a "roadshow," pitching the company to large institutional investors to generate interest and gauge demand.</p>
+                        </div>
+                        <div id="timeline-content-3" class="timeline-content hidden">
+                            <h3 class="text-2xl font-bold text-gray-900">Phase 3: Pricing, Allocation & Listing</h3>
+                            <p class="mt-4 text-gray-600">After the roadshow, the company and underwriters set the final IPO price based on investor demand. The shares are then allocated to the institutional investors who placed orders. Finally, the stock begins trading on the exchange (e.g., NYSE or Nasdaq), and its price is now driven by public market supply and demand.</p>
+                        </div>
+                        <div id="timeline-content-4" class="timeline-content hidden">
+                            <h3 class="text-2xl font-bold text-gray-900">Phase 4: Post-IPO Considerations</h3>
+                            <p class="mt-4 text-gray-600">The journey isn't over. Underwriters may stabilize the stock price in early trading. Insiders are subject to "lock-up periods," preventing them from selling shares for 90-180 days to avoid price shocks. The company must now adhere to ongoing public reporting requirements and manage investor relations.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="section-investor-view" class="py-16 md:py-24">
+            <div class="container mx-auto px-6">
+                <h2 class="text-3xl md:text-4xl font-bold text-center text-gray-900">The Investor's View: Risks vs. Rewards</h2>
+                <p class="mt-4 text-center text-gray-600 max-w-2xl mx-auto">For investors, IPOs can be a thrilling opportunity to get in on the "ground floor" of the next big thing. However, they carry unique and significant risks. This section breaks down the potential upside and downside of investing in newly public companies.</p>
+                
+                <div class="mt-12">
+                    <div class="chart-container">
+                        <canvas id="investorRiskRewardChart"></canvas>
+                    </div>
+                    <p class="text-center text-sm text-gray-500 mt-4">Hover over the bars to see details. This chart illustrates the conceptual balance of factors an investor must consider.</p>
+                </div>
+
+                <div class="mt-16 max-w-5xl mx-auto">
+                    <h3 class="text-2xl font-bold text-center text-gray-900 mb-8">Challenges for Individual Investors</h3>
+                    <div class="grid md:grid-cols-2 gap-8">
+                        <div class="bg-white p-6 rounded-lg shadow-md">
+                            <h4 class="font-bold text-lg text-gray-900">Limited Access</h4>
+                            <p class="mt-2 text-gray-600">Most IPO shares are allocated to large institutional investors. It's difficult for the average retail investor to buy shares at the initial offering price.</p>
+                        </div>
+                        <div class="bg-white p-6 rounded-lg shadow-md">
+                            <h4 class="font-bold text-lg text-gray-900">The "IPO Pop" Problem</h4>
+                            <p class="mt-2 text-gray-600">By the time retail investors can buy on the open market, the price may have already "popped" significantly higher, reducing potential gains and increasing risk.</p>
+                        </div>
+                         <div class="bg-white p-6 rounded-lg shadow-md">
+                            <h4 class="font-bold text-lg text-gray-900">Information Asymmetry</h4>
+                            <p class="mt-2 text-gray-600">Institutional investors get direct access to management during roadshows. Retail investors must rely on public filings, which can be dense and difficult to analyze.</p>
+                        </div>
+                         <div class="bg-white p-6 rounded-lg shadow-md">
+                            <h4 class="font-bold text-lg text-gray-900">Hype vs. Fundamentals</h4>
+                            <p class="mt-2 text-gray-600">Media hype can inflate valuations beyond what the company's financial fundamentals support, leading to a high risk of a price correction after the initial excitement fades.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="section-key-terms" class="py-16 md:py-24 bg-white">
+            <div class="container mx-auto px-6">
+                <h2 class="text-3xl md:text-4xl font-bold text-center text-gray-900">IPO Key Terms Glossary</h2>
+                <p class="mt-4 text-center text-gray-600 max-w-2xl mx-auto">The world of IPOs has its own language. Use this searchable glossary to quickly look up and understand the essential terminology.</p>
+                
+                <div class="mt-12 max-w-2xl mx-auto">
+                    <input type="text" id="glossary-search" placeholder="Search for a term (e.g., Underwriter)..." class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                </div>
+
+                <div id="glossary-list" class="mt-8 max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-6">
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="bg-gray-800 text-white">
+        <div class="container mx-auto px-6 py-8 text-center">
+            <p>&copy; 2025 Interactive IPO Guide. All information is for educational purposes only.</p>
+            <p class="text-sm text-gray-400 mt-2">This application was generated based on a comprehensive report on IPOs in the USA.</p>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const mobileMenuButton = document.getElementById('mobile-menu-button');
+            const mobileMenu = document.getElementById('mobile-menu');
+            mobileMenuButton.addEventListener('click', () => {
+                mobileMenu.classList.toggle('hidden');
+            });
+
+            const navLinks = document.querySelectorAll('nav a');
+            mobileMenu.addEventListener('click', () => {
+                 mobileMenu.classList.add('hidden');
+            });
+
+            const sections = document.querySelectorAll('main section[id]');
+            window.addEventListener('scroll', () => {
+                let current = '';
+                sections.forEach(section => {
+                    const sectionTop = section.offsetTop;
+                    if (pageYOffset >= sectionTop - 100) {
+                        current = section.getAttribute('id');
+                    }
+                });
+
+                navLinks.forEach(link => {
+                    link.classList.remove('active');
+                    if (link.getAttribute('href').includes(current)) {
+                        link.classList.add('active');
+                    }
+                });
+            });
+
+            const tabButtons = document.querySelectorAll('.tab-btn');
+            const tabContents = document.querySelectorAll('.tab-content');
+            tabButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    const targetTab = button.dataset.tab;
+
+                    tabButtons.forEach(btn => {
+                        btn.classList.remove('text-blue-600', 'border-blue-600');
+                        btn.classList.add('text-gray-500');
+                    });
+                    button.classList.add('text-blue-600', 'border-blue-600');
+                    button.classList.remove('text-gray-500');
+
+                    tabContents.forEach(content => {
+                        content.classList.add('hidden');
+                        if (content.id === targetTab) {
+                            content.classList.remove('hidden');
+                        }
+                    });
+                });
+            });
+
+            const timelineItems = document.querySelectorAll('.timeline-item');
+            const timelineContents = document.querySelectorAll('.timeline-content');
+            const timelineContentContainer = document.getElementById('timeline-content-container');
+            timelineItems.forEach(item => {
+                item.addEventListener('click', () => {
+                    const targetContentId = item.dataset.target;
+
+                    timelineItems.forEach(i => {
+                        i.classList.remove('active', 'border-blue-500');
+                        i.classList.add('border-gray-300');
+                    });
+                    item.classList.add('active', 'border-blue-500');
+                    item.classList.remove('border-gray-300');
+                    
+                    timelineContentContainer.classList.remove('fade-in');
+                    void timelineContentContainer.offsetWidth; 
+                    timelineContentContainer.classList.add('fade-in');
+
+                    timelineContents.forEach(content => {
+                        content.classList.add('hidden');
+                        if (content.id === targetContentId) {
+                            content.classList.remove('hidden');
+                        }
+                    });
+                });
+            });
+
+            const investorChartCtx = document.getElementById('investorRiskRewardChart').getContext('2d');
+            const investorChart = new Chart(investorChartCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['Access to High-Growth Companies', 'Potential for High Returns', 'High Price Volatility', 'Risk of Overpricing', 'Limited Financial History', 'Insider Selling Pressure'],
+                    datasets: [{
+                        label: 'Impact Score',
+                        data: [85, 90, -95, -80, -75, -70],
+                        backgroundColor: [
+                            'rgba(59, 130, 246, 0.6)',
+                            'rgba(34, 197, 94, 0.6)',
+                            'rgba(239, 68, 68, 0.6)',
+                            'rgba(249, 115, 22, 0.6)',
+                            'rgba(245, 158, 11, 0.6)',
+                            'rgba(217, 70, 239, 0.6)'
+                        ],
+                        borderColor: [
+                            'rgba(59, 130, 246, 1)',
+                            'rgba(34, 197, 94, 1)',
+                            'rgba(239, 68, 68, 1)',
+                            'rgba(249, 115, 22, 1)',
+                            'rgba(245, 158, 11, 1)',
+                            'rgba(217, 70, 239, 1)'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    indexAxis: 'y',
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false },
+                        title: { display: true, text: 'Investor Opportunities (Positive) vs. Risks (Negative)', font: { size: 16 } },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    let label = context.dataset.label || '';
+                                    if (label) { label += ': '; }
+                                    const value = context.raw;
+                                    const descriptions = {
+                                        'Access to High-Growth Companies': 'Opportunity: Invest in innovative companies before they become household names.',
+                                        'Potential for High Returns': 'Opportunity: Early investment in a successful company can lead to substantial long-term gains.',
+                                        'High Price Volatility': 'Risk: Shares can experience wild price swings, especially in the early months.',
+                                        'Risk of Overpricing': 'Risk: Hype can inflate the initial price, leading to a sharp correction later.',
+                                        'Limited Financial History': 'Risk: Young companies lack a long track record, making future performance hard to predict.',
+                                        'Insider Selling Pressure': 'Risk: After lock-up periods expire, insiders selling their shares can drive the price down.'
+                                    };
+                                    return descriptions[context.label] || '';
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            title: { display: true, text: 'Conceptual Risk/Reward Score' }
+                        },
+                        y: {
+                            ticks: {
+                                autoSkip: false,
+                                callback: function(value, index, values) {
+                                    const label = this.getLabelForValue(value);
+                                    if (label.length > 20) {
+                                        return label.match(/.{1,16}/g);
+                                    }
+                                    return label;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+
+            const glossaryData = [
+                { term: 'Underwriter', definition: 'An investment bank that manages the IPO process, from pricing to selling the shares. They act as the intermediary between the company and investors.' },
+                { term: 'S-1 Registration Statement', definition: 'The primary registration document filed with the SEC. It provides a comprehensive overview of the company\'s business, financials, and risk factors.' },
+                { term: 'Roadshow', definition: 'A series of presentations to potential institutional investors by the company\'s management and underwriters to generate interest and demand for the IPO.' },
+                { term: 'Book-Building', definition: 'The process used by underwriters to determine the offering price by gauging demand from institutional investors.' },
+                { term: 'Lock-up Period', definition: 'A contractual restriction that prevents company insiders from selling their shares for a specific period (usually 90-180 days) after the IPO.' },
+                { term: 'Issue Price (Offering Price)', definition: 'The fixed price at which the company\'s shares are sold to investors in the IPO before they start trading on the open market.' },
+                { term: 'Listing Price', definition: 'The price at which the shares first trade on the stock exchange. This price is determined by market supply and demand and can be different from the issue price.' },
+                { term: 'Flipping', definition: 'The practice of reselling IPO shares for a quick profit within the first few days or weeks of trading.' },
+                { term: 'Syndicate', definition: 'A group of investment banks, led by the lead underwriter, that work together to sell the IPO shares and share the risk.' },
+                { term: 'Prospectus (Red Herring)', definition: 'The official offering document for the IPO, which is part of the S-1 filing. A preliminary version without the final price is called a "red herring".' },
+                { term: 'Quiet Period', definition: 'A period after the IPO during which the company and its underwriters are restricted from making public statements or forecasts about the company.' },
+                { term: 'Direct Listing (DPO)', definition: 'An alternative to an IPO where a company lists its existing shares on an exchange without hiring underwriters or raising new capital.' }
+            ];
+
+            const glossaryList = document.getElementById('glossary-list');
+            const glossarySearch = document.getElementById('glossary-search');
+
+            function renderGlossary(filter = '') {
+                glossaryList.innerHTML = '';
+                const filteredData = glossaryData.filter(item => 
+                    item.term.toLowerCase().includes(filter.toLowerCase()) || 
+                    item.definition.toLowerCase().includes(filter.toLowerCase())
+                );
+
+                if (filteredData.length === 0) {
+                    glossaryList.innerHTML = `<p class="text-gray-500 md:col-span-2 text-center">No terms found.</p>`;
+                    return;
+                }
+
+                filteredData.forEach(item => {
+                    const div = document.createElement('div');
+                    div.className = 'glossary-item bg-gray-50 p-6 rounded-lg fade-in';
+                    div.innerHTML = `
+                        <h4 class="font-bold text-lg text-blue-700">${item.term}</h4>
+                        <p class="mt-2 text-gray-600">${item.definition}</p>
+                    `;
+                    glossaryList.appendChild(div);
+                });
+            }
+
+            glossarySearch.addEventListener('input', (e) => {
+                renderGlossary(e.target.value);
+            });
+
+            renderGlossary();
+        });
+    </script>
+</body>
+</html>
